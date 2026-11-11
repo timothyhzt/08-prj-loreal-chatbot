@@ -4,7 +4,7 @@ const SYSTEM_PROMPT =
 
 // Replace this placeholder with the class Cloudflare Worker URL later.
 const WORKER_URL =
-  "https://08-prj-loreal-chatbot.timothytu0807.workers.dev";
+  "https://soft-frog-9d6e.timothytu0807.workers.dev/";
 
 // Keeping the full history lets the assistant refer to earlier questions.
 const conversationHistory = [{ role: "system", content: SYSTEM_PROMPT }];
