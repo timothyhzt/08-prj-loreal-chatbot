@@ -1,40 +1,58 @@
-// Copy this code into your Cloudflare Worker script
-
 export default {
   async fetch(request, env) {
     const corsHeaders = {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-      'Content-Type': 'application/json'
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
     };
 
-    // Handle CORS preflight requests
-    if (request.method === 'OPTIONS') {
+    if (request.method === "OPTIONS") {
       return new Response(null, { headers: corsHeaders });
     }
 
-    const apiKey = env.OPENAI_API_KEY; // Make sure to name your secret OPENAI_API_KEY in the Cloudflare Workers dashboard
-    const apiUrl = 'https://api.openai.com/v1/chat/completions';
-    const userInput = await request.json();
+    if (request.method !== "POST") {
+      return jsonResponse({ error: "Only POST requests are supported." }, 405, corsHeaders);
+    }
 
-    const requestBody = {
-      model: 'gpt-4o',
-      messages: userInput.messages,
-      max_completion_tokens: 300,
-    };
+    if (!env.OPENAI_API_KEY) {
+      return jsonResponse({ error: "The OPENAI_API_KEY secret is not configured." }, 500, corsHeaders);
+    }
 
-    const response = await fetch(apiUrl, {
-      method: 'POST',
+    let userInput;
+    try {
+      userInput = await request.json();
+    } catch {
+      return jsonResponse({ error: "The request body must be valid JSON." }, 400, corsHeaders);
+    }
+
+    if (!Array.isArray(userInput.messages)) {
+      return jsonResponse({ error: "The request must include a messages array." }, 400, corsHeaders);
+    }
+
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
+        Authorization: ["Bearer", env.OPENAI_API_KEY].join(" "),
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(requestBody)
+      body: JSON.stringify({
+        model: "gpt-4.1",
+        messages: userInput.messages,
+        max_completion_tokens: 300,
+      }),
     });
 
     const data = await response.json();
-
-    return new Response(JSON.stringify(data), { headers: corsHeaders });
-  }
+    return jsonResponse(data, response.status, corsHeaders);
+  },
 };
+
+function jsonResponse(data, status, corsHeaders) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/json",
+    },
+  });
+}
