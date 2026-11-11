@@ -2,9 +2,10 @@
 const SYSTEM_PROMPT =
   "You are a helpful L'Oréal beauty assistant. You help users discover and understand L'Oréal products, including makeup, skincare, haircare, and fragrances. You may provide personalized beauty routines and product recommendations. Keep recommendations helpful, concise, and friendly. Only answer questions related to L'Oréal, L'Oréal products, beauty routines, product recommendations, or closely related beauty topics. Politely refuse unrelated questions and redirect the user toward L'Oréal or beauty topics.";
 
-// Replace this placeholder with the class Cloudflare Worker URL later.
+// The browser needs the full HTTPS URL to reach the Cloudflare Worker.
 const WORKER_URL =
   "https://soft-frog-9d6e.timothytu0807.workers.dev/";
+
 
 // Keeping the full history lets the assistant refer to earlier questions.
 const conversationHistory = [{ role: "system", content: SYSTEM_PROMPT }];
