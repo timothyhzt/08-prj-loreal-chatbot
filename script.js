@@ -13,6 +13,7 @@ const conversationHistory = [{ role: "system", content: SYSTEM_PROMPT }];
 const chatForm = document.getElementById("chatForm");
 const userInput = document.getElementById("userInput");
 const chatWindow = document.getElementById("chatWindow");
+const latestQuestion = document.getElementById("latestQuestion");
 const sendBtn = document.getElementById("sendBtn");
 
 // Add one message bubble and scroll it into view.
@@ -33,6 +34,7 @@ async function sendMessage() {
   }
 
   addMessage(messageText, "user");
+  latestQuestion.textContent = `Latest question: ${messageText}`;
   conversationHistory.push({ role: "user", content: messageText });
   userInput.value = "";
   sendBtn.disabled = true;

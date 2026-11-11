@@ -147,6 +147,15 @@ body {
   scroll-behavior: smooth;
 }
 
+/* Shows the newest submitted question separately from the chat history. */
+.latest-question {
+  min-height: 20px;
+  padding: 14px 28px 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-style: italic;
+}
+
 /* Message bubbles */
 .msg {
   width: fit-content;
@@ -302,6 +311,10 @@ body {
   .chat-window {
     height: 390px;
     padding: 20px 16px;
+  }
+
+  .latest-question {
+    padding: 14px 16px 0;
   }
 
   .msg {
